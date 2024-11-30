@@ -155,5 +155,30 @@ namespace опд1
             }
 
         }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void textBoxLId_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void textBoxTime_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxWeight_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

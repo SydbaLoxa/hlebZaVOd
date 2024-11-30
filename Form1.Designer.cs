@@ -39,30 +39,28 @@
             // 
             this.login.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.login.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.login.Location = new System.Drawing.Point(392, 165);
-            this.login.Margin = new System.Windows.Forms.Padding(4);
+            this.login.Location = new System.Drawing.Point(294, 134);
             this.login.Name = "login";
-            this.login.Size = new System.Drawing.Size(240, 34);
+            this.login.Size = new System.Drawing.Size(180, 29);
             this.login.TabIndex = 0;
+            this.login.TextChanged += new System.EventHandler(this.login_TextChanged);
             // 
             // password
             // 
             this.password.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.password.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.password.Location = new System.Drawing.Point(392, 265);
-            this.password.Margin = new System.Windows.Forms.Padding(4);
+            this.password.Location = new System.Drawing.Point(294, 215);
             this.password.Name = "password";
-            this.password.Size = new System.Drawing.Size(240, 34);
+            this.password.Size = new System.Drawing.Size(180, 29);
             this.password.TabIndex = 1;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(387, 132);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(290, 107);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(83, 29);
+            this.label1.Size = new System.Drawing.Size(64, 24);
             this.label1.TabIndex = 2;
             this.label1.Text = "Логин";
             // 
@@ -70,10 +68,9 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(387, 231);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(290, 188);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(96, 29);
+            this.label2.Size = new System.Drawing.Size(76, 24);
             this.label2.TabIndex = 3;
             this.label2.Text = "Пароль";
             // 
@@ -81,10 +78,9 @@
             // 
             this.logon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.logon.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.logon.Location = new System.Drawing.Point(459, 319);
-            this.logon.Margin = new System.Windows.Forms.Padding(4);
+            this.logon.Location = new System.Drawing.Point(344, 259);
             this.logon.Name = "logon";
-            this.logon.Size = new System.Drawing.Size(100, 50);
+            this.logon.Size = new System.Drawing.Size(75, 41);
             this.logon.TabIndex = 4;
             this.logon.Text = "войти";
             this.logon.UseVisualStyleBackColor = true;
@@ -92,15 +88,14 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1062, 553);
+            this.ClientSize = new System.Drawing.Size(796, 449);
             this.Controls.Add(this.logon);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.password);
             this.Controls.Add(this.login);
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Вход";
             this.ResumeLayout(false);

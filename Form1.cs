@@ -109,5 +109,10 @@ namespace опд1
 
             
         }
+
+        private void login_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
