@@ -34,10 +34,13 @@ namespace опд1
             string query = "SELECT machine_type FROM equimpet WHERE fk_line_id = 1";
             string query2 = "SELECT machine_type FROM equimpet WHERE fk_line_id = 2";
             string query_weight_ub1 = "SELECT weight_untill_break FROM equimpet WHERE fk_line_id = 1";
+            string query_weight_ub2 = "SELECT weight_untill_break FROM equimpet WHERE fk_line_id = 2";
             string query_scale1 = " SELECT weight_out FROM scales WHERE fk_line_id = 1";
+            string query_scale2 = " SELECT weight_out FROM scales WHERE fk_line_id = 2";
             //string query2 = "SELECT machine_type FROM equimpet WHERE fk_line_id = 2";
             string query_equip = "SELECT * FROM equimpet";
             string query_probeg1 = "SELECT probeg FROM equimpet WHERE fk_line_id = 1";
+            string query_probeg2 = "SELECT probeg FROM equimpet WHERE fk_line_id = 2";
             using (var connection = new NpgsqlConnection(connectionString))
             {
 
@@ -206,6 +209,25 @@ namespace опд1
                     //sb3.AppendLine(row3["weight_untill_break"].ToString());
                     ii++;
                 }
+
+                var dataAdapter32 = new NpgsqlDataAdapter(query_weight_ub2, connection);
+                var dataTable32 = new DataTable();
+
+
+                //connection.Open();
+                dataAdapter32.Fill(dataTable32);
+                StringBuilder sb32 = new StringBuilder();
+                int[] numbers2 = new int[4];
+                string wub2 = string.Empty;
+
+                int ii2 = 0;
+                foreach (DataRow row32 in dataTable32.Rows)
+                {
+                    wub2 = row32["weight_untill_break"].ToString();
+                    numbers2[ii2] = int.Parse(wub2);
+                    //sb3.AppendLine(row3["weight_untill_break"].ToString());
+                    ii2++;
+                }
                 //textBox5.Text = numbers.ToString();
                 //****************************************************************** СОБИРАЮ ДАННЫЙ О ПРОБЕГЕ
                 var dataAdapter1 = new NpgsqlDataAdapter(query_probeg1, connection);
@@ -226,6 +248,25 @@ namespace опд1
                     //sb3.AppendLine(row3["weight_untill_break"].ToString());
                     ii1++;
                 }
+
+                var dataAdapter12 = new NpgsqlDataAdapter(query_probeg2, connection);
+                var dataTable12 = new DataTable();
+
+
+                //connection.Open();
+                dataAdapter12.Fill(dataTable12);
+                StringBuilder sb12 = new StringBuilder();
+                int[] numbers12 = new int[4];
+                string wub12 = string.Empty;
+
+                int ii12 = 0;
+                foreach (DataRow row12 in dataTable12.Rows)
+                {
+                    wub12 = row12["probeg"].ToString();
+                    numbers12[ii12] = int.Parse(wub12);
+                    //sb3.AppendLine(row3["weight_untill_break"].ToString());
+                    ii12++;
+                }
                 //****************************************************************** СОБИРАЮ СТРОКУ С ТИПАМИ ОБОРУДОВАНИЯ
                 var dataAdapter33 = new NpgsqlDataAdapter(query, connection);
                 var dataTable33 = new DataTable();
@@ -243,15 +284,30 @@ namespace опд1
                     maty += row3["machine_type"].ToString();
                 }
 
+                var dataAdapter332 = new NpgsqlDataAdapter(query2, connection);
+                var dataTable332 = new DataTable();
+
+
+                //connection.Open();
+                dataAdapter332.Fill(dataTable32);
+
+
+                string maty2 = string.Empty;
+
+
+                foreach (DataRow row32 in dataTable32.Rows)
+                {
+                    maty2 += row32["machine_type"].ToString();
+                }
                 //****************************************************************** ВЫСЧИТЫВАЕМ СУММУ ВЕСА
 
                 var dataAdapter4 = new NpgsqlDataAdapter(query_scale1, connection);
                 var dataTable4 = new DataTable();
 
 
-                //connection.Open();
+                
                 dataAdapter4.Fill(dataTable4);
-                //List<string> weights = new List<string>();
+                
                 string result = string.Empty;
                 int weight_outSum=0;
                 foreach (DataRow row4 in dataTable4.Rows)
@@ -259,31 +315,27 @@ namespace опд1
                     result =row4["weight_out"].ToString();
                     weight_outSum += int.Parse(result);
                 }
-               // string result = string.Join(Environment.NewLine, weights);
-                string WOS = weight_outSum.ToString();
-                //textBox5.Text = WOS;
-                // Сначала я получаю, занчения из пробега в массив, затем прибовляю к ним новый вес, затем вписываю обратно
-                //var dataAdapterpro = new NpgsqlDataAdapter(query_probeg1, connection);
-                //var dataTablepro = new DataTable();
-
-
-                ////connection.Open();
-                //dataAdapterpro.Fill(dataTablepro);
-                //StringBuilder sbpro = new StringBuilder();
-                //int[] numberspro = new int[4];
-                //string wubpro = string.Empty;
-
-                //int iipro = 0;
-                
                
-                //foreach (DataRow rowpro in dataTablepro.Rows)
-                //{
-                //    wub = rowpro["probeg"].ToString();
-                //    numbers[iipro] = int.Parse(wub);
-                //    //sb3.AppendLine(row3["weight_untill_break"].ToString());
-                //    iipro++;
+                string WOS = weight_outSum.ToString();
 
-                //}
+
+                var dataAdapter42 = new NpgsqlDataAdapter(query_scale2, connection);
+                var dataTable42 = new DataTable();
+
+
+
+                dataAdapter42.Fill(dataTable42);
+
+                string result2 = string.Empty;
+                int weight_outSum2 = 0;
+                foreach (DataRow row42 in dataTable42.Rows)
+                {
+                    result2 = row42["weight_out"].ToString();
+                    weight_outSum2 += int.Parse(result2);
+                }
+
+                string WOS2 = weight_outSum2.ToString();
+
 
                 //*************************************************************************СРАВНИВАЕМ ВЫШЕДШИЙ ВЕС С КРИТИЧЕСКИМ
                 for (int iq=0; iq < 4; iq++)
@@ -356,6 +408,80 @@ namespace опд1
 
                     }
                 }
+                //**********************************************************************8
+
+                for (int iq = 0; iq < 4; iq++)
+                {
+                    if ((numbers12[iq] * 100 / numbers2[iq]) < 150 && (numbers12[iq] * 100 / numbers2[iq]) > 100)//Вычисляем какой технике требуется проверка
+                    {
+                        string querymas = "SELECT seria, machine_type FROM equimpet WHERE fk_line_id=2 AND weight_untill_break= @numbersIQ";
+                        using (var connection2 = new NpgsqlConnection(connectionString))
+                        {
+                            using (var command = new NpgsqlCommand(querymas, connection2)) // Исправлено: используем connection2
+                            {
+                                command.Parameters.AddWithValue("numbersIQ", numbers2[iq]); // Убедитесь, что параметр не начинается с '@'
+
+                                connection2.Open(); // Исправлено: используем connection2
+
+                                using (var reader = command.ExecuteReader())
+                                {
+                                    while (reader.Read())
+                                    {
+                                        // Получаем значения seria и machine_type
+                                        string seria = reader.GetString(0); // Получаем значение seria
+                                        string machineType = reader.GetString(1); // Получаем значение machine_type
+
+                                        // Формируем строку с данными
+                                        string resultt = $"Seria: {seria}, Machine Type: {machineType}";
+                                        //MessageBox.Show(resultt, "Требуется проверка на первой линии");
+                                        textBox5.Text += "Требуется проверка на второй линии: " + resultt + "\n\n";
+                                        textBox5.Text += Environment.NewLine;
+                                        // Выводим результат
+                                        //Console.WriteLine(result);
+                                    }
+                                }
+                            }
+                        }
+
+
+                    }
+
+                    if ((numbers12[iq] * 100 / numbers2[iq]) > 150)// вычисляем кокой технике требуется обслуживание
+                    {
+                        string querymas = "SELECT seria, machine_type FROM equimpet WHERE fk_line_id=2 AND weight_untill_break= @numbersIQ";
+                        using (var connection2 = new NpgsqlConnection(connectionString))
+                        {
+                            using (var command = new NpgsqlCommand(querymas, connection2)) // Исправлено: используем connection2
+                            {
+                                command.Parameters.AddWithValue("numbersIQ", numbers[iq]); // Убедитесь, что параметр не начинается с '@'
+
+                                connection2.Open(); // Исправлено: используем connection2
+
+                                using (var reader = command.ExecuteReader())
+                                {
+                                    while (reader.Read())
+                                    {
+                                        // Получаем значения seria и machine_type
+                                        string seria = reader.GetString(0); // Получаем значение seria
+                                        string machineType = reader.GetString(1); // Получаем значение machine_type
+
+                                        // Формируем строку с данными
+                                        string resultt = $"Seria: {seria}, Machine Type: {machineType}";
+                                        textBox5.Text += "Требуется обслуживание на второй линии: " + (resultt + "\n\n");
+                                        textBox5.Text += Environment.NewLine;
+
+                                        // MessageBox.Show(resultt, "Требуется обслуживание на первой линии");
+                                        // Выводим результат
+                                        //Console.WriteLine(result);
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+
             }
 
         }
@@ -473,7 +599,19 @@ namespace опд1
 
 
 
+            Form currentForm = this;
 
+            // Создаем новый экземпляр той же формы
+            Form newForm = new Form5(); // Замените Form1 на имя вашей формы
+
+            // Закрываем текущую форму
+            currentForm.Hide(); // Скрываем текущую форму (можно использовать Close() если не нужно сохранять состояние)
+
+            // Показываем новый экземпляр формы
+            newForm.Show();
+
+            // Удаляем старую форму, если это необходимо
+            currentForm.Close();
 
 
 
