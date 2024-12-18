@@ -79,9 +79,9 @@ namespace опд1
 
         private void exit_Click(object sender, EventArgs e)
         {
-            //Form1 f1 = new Form1();
-            //this.Close();
-            //f1.Show();
+            Form1 f1 = new Form1();
+            this.Close();
+            f1.Show();
         }
 
         private void account_Click(object sender, EventArgs e)
@@ -92,36 +92,72 @@ namespace опд1
         {
             try
             {
+                string connectionString = "Host=localhost;Username=postgres;Password=98321;Database=opd";
+                string query = "SELECT * FROM break_history WHERE time_ BETWEEN @startDate AND @endDate";
+
+                // Создание таблицы для данных
+                var dataTable = new System.Data.DataTable();
+
+                // Получение данных за выбранный период
+                using (var connection = new NpgsqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var command = new NpgsqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("startDate", selectedDate);
+                        command.Parameters.AddWithValue("endDate", DateTime.Now);
+
+                        var dataAdapter = new NpgsqlDataAdapter(command);
+                        dataAdapter.Fill(dataTable);
+                    }
+                }
+
+                if (dataTable.Rows.Count == 0)
+                {
+                    MessageBox.Show("Нет данных за выбранный период.");
+                    return;
+                }
+
+                // Список пользовательских заголовков
+                var customHeaders = new List<string>
+        {
+            "Идентификатор", // Для столбца id
+            "Время",         // Для столбца time
+            "Серия",         // Для столбца seria
+            "Тип оборудования" // Для столбца machine_type
+        };
+
+                // Создание документа Word
                 var wordApp = new Microsoft.Office.Interop.Word.Application();
                 var document = wordApp.Documents.Add();
 
                 var paragraph = document.Content.Paragraphs.Add();
-                paragraph.Range.Text = $"Отчёт за {selectedDate.ToShortDateString()}";
+                paragraph.Range.Text = $"Отчёт за период с {selectedDate.ToShortDateString()} по {DateTime.Now.ToShortDateString()}";
                 paragraph.Range.InsertParagraphAfter();
 
                 // Создание таблицы в Word
-                Table wordTable = document.Tables.Add(paragraph.Range, dataGridView1.Rows.Count + 1, dataGridView1.Columns.Count);
+                Table wordTable = document.Tables.Add(paragraph.Range, dataTable.Rows.Count + 1, dataTable.Columns.Count);
                 wordTable.Borders.Enable = 1;
 
-                // Заполнение заголовков таблицы
-                for (int i = 0; i < dataGridView1.Columns.Count; i++)
+                // Заполнение пользовательских заголовков таблицы
+                for (int i = 0; i < dataTable.Columns.Count; i++)
                 {
-                    wordTable.Cell(1, i + 1).Range.Text = dataGridView1.Columns[i].HeaderText;
+                    wordTable.Cell(1, i + 1).Range.Text = customHeaders[i];
                 }
 
                 // Заполнение строк таблицы
-                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                for (int i = 0; i < dataTable.Rows.Count; i++)
                 {
-                    for (int j = 0; j < dataGridView1.Columns.Count; j++)
+                    for (int j = 0; j < dataTable.Columns.Count; j++)
                     {
-                        wordTable.Cell(i + 2, j + 1).Range.Text = dataGridView1.Rows[i].Cells[j].Value?.ToString() ?? "";
+                        wordTable.Cell(i + 2, j + 1).Range.Text = dataTable.Rows[i][j]?.ToString() ?? "";
                     }
                 }
 
                 // Указание пути для сохранения
                 string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Отчёты");
                 Directory.CreateDirectory(folderPath); // Убедимся, что папка "Отчёты" существует
-                string filePath = Path.Combine(folderPath, $"Отчёт_{selectedDate:yyyy-MM-dd}.docx");
+                string filePath = Path.Combine(folderPath, $"Отчёт_{selectedDate:yyyy-MM-dd}");
 
                 document.SaveAs2(filePath);
                 document.Close();
@@ -136,3 +172,4 @@ namespace опд1
         }
     }
 }
+
